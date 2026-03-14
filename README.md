@@ -1,184 +1,116 @@
 # ADARSH_ARYA_PORTFOLIO
-🚀 Developer Portfolio Website
+# 🚀 Adarsh Arya — Developer Portfolio
 
-A modern and interactive Full-Stack Developer Portfolio designed to showcase my projects, skills, certifications, and development journey.
-The website is built using HTML, CSS, and JavaScript with a strong focus on clean UI, animations, and responsive design.
+A modern **Full-Stack Developer Portfolio** built to showcase my **projects, skills, certifications, and development journey**.
+Designed with a clean developer-focused UI, smooth animations, and responsive layout.
 
-This portfolio serves as my professional digital presence where visitors can explore my work, credentials, and connect with me.
+This portfolio acts as my **professional digital presence** where visitors can explore my work and connect with me.
 
-🌐 Live Demo
+---
 
-Add your deployed portfolio link here
+## 🌐 Live Demo
 
-https://your-portfolio-link.com
-✨ Key Features
-👨‍💻 Developer Introduction
+🔗 https://adarsh-arya-portfolio.onrender.com/
 
-Hero section with personal branding
+---
 
-Full-Stack Developer highlight
+## ✨ Key Features
 
-Animated visual elements
+**👨‍💻 Developer Introduction**
+Hero section with personal branding and Full-Stack Developer highlight.
 
-🎨 Modern UI Design
+**🎨 Modern UI Design**
+Dark developer aesthetic with smooth animations and fully responsive layout.
 
-Dark theme developer aesthetic
+**🛠 Tech & Tools Section**
+Displays technologies and tools I use in development.
 
-Smooth animations and transitions
+**💼 Featured Projects**
+Includes interactive web projects and JavaScript applications.
 
-Responsive layout for desktop and mobile
+**🏆 Certifications**
+Verified credentials from platforms like HackerRank, Udemy, IAMNEO, and university programs.
 
-🛠 Tools & Technologies
+**📈 My Journey**
+Timeline showing my learning path and technical growth.
 
-Displays technologies and tools I use as a developer.
+**💬 Testimonials**
+Feedback from collaborators and peers.
 
-💼 Featured Projects
+**📬 Contact Form**
+Allows visitors to reach out directly.
 
-Showcases development projects including:
+---
 
-JavaScript applications
+## 🧰 Tech Stack
 
-Interactive web projects
+**Frontend**
 
-Problem-solving implementations
+* HTML5
+* CSS3
+* JavaScript (Vanilla JS)
 
-🏆 Verified Credentials
+**Tools**
 
-Displays certifications and learning achievements from platforms like:
+* Git
+* GitHub
+* VS Code
 
-HackerRank
+---
 
-Udemy
+## 🚀 Run Locally
 
-IAMNEO
+Clone the repository:
 
-Coursera / University programs
-
-📈 My Journey
-
-Timeline section describing my:
-
-Learning journey
-
-Technical growth
-
-Development milestones
-
-💬 Testimonials
-
-Feedback and comments from collaborators and peers.
-
-📬 Contact Section
-
-Visitors can contact me directly through a contact form.
-
-🧰 Tech Stack
-
-Frontend
-
-HTML5
-
-CSS3
-
-JavaScript (Vanilla JS)
-
-Tools
-
-Git
-
-GitHub
-
-VS Code
-
-📂 Project Structure
-PORTFOLIO
-│
-├── certificates
-│   ├── java-iamneo.jpg.png
-│   ├── network-fundamentals-cu.jpg.png
-│   ├── oop-iamneo.jpg.png
-│   ├── p2p-protocols-cu.jpg.png
-│   ├── packet-switching-cu.jpg.png
-│   ├── problem-solving-hr.jpg.png
-│   ├── prompt-eng-udemy.jpg.png
-│   ├── python-hr.jpg.png
-│   ├── skillx-lpu.jpg.png
-│   └── spoken-english-lv.jpg.png
-│
-├── images
-│   ├── about_image.png
-│   └── hero-image.png
-│
-├── resumes
-│   ├── general-resume.pdf
-│   └── specialized-resume.pdf
-│
-├── JS
-│   ├── patch_cursor_css.py
-│   ├── patch_cursor_js.py
-│   ├── patch_nav_css.py
-│   ├── patch_nav_html.py
-│   ├── patch_nav_js.py
-│   ├── patch_nav_mobile_fix.py
-│   ├── patch_proj_css.py
-│   ├── patch_proj_js.py
-│   └── patch_projects.py
-│
-├── index.html
-├── style.css
-├── main.js
-└── README.md
-🚀 How to Run the Project
-1️⃣ Clone the repository
+```bash
 git clone https://github.com/yourusername/portfolio.git
-2️⃣ Open the project folder
+```
+
+Open the folder:
+
+```bash
 cd portfolio
-3️⃣ Run the website
+```
 
-Simply open:
+Run the website by opening:
 
+```
 index.html
+```
 
 in your browser.
 
-🎯 Purpose of the Portfolio
+---
 
-This portfolio was created to:
+## 🎯 Purpose
 
-Present my technical skills
+This portfolio was built to:
 
-Showcase my development projects
+* Showcase my **technical skills**
+* Present my **development projects**
+* Display **verified certifications**
+* Build a **professional online presence**
 
-Display verified certifications
+---
 
-Build a professional online presence
+## 🔮 Future Improvements
 
-📌 Future Improvements
+* Backend integration for contact form
+* Blog section for technical articles
+* More animations and micro-interactions
+* Project filtering and categories
+* SEO and performance optimization
 
-Planned updates for the portfolio:
+---
 
-Add backend support for contact form
+## 👨‍💻 Author
 
-Add blog section for technical writing
-
-Improve animations and micro-interactions
-
-Add project filtering and categories
-
-Optimize SEO and performance
-
-👨‍💻 Author
-
-Adarsh Arya
-
+**Adarsh Arya**
 B.Tech CSE Student
-
 Aspiring Full-Stack Developer
 
-Passionate about building impactful web applications
+Passionate about building impactful web applications.
 
-⭐ Support
+---
 
-If you like this project, consider starring the repository ⭐.
-
-It motivates me to continue building and sharing more projects.
+⭐ **If you like this project, consider starring the repository.**
