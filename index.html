@@ -80,6 +80,8 @@
                 <li><a href="#about" class="nav-link" data-nav="about">About</a></li>
                 <li><a href="#stack" class="nav-link" data-nav="stack">Stack</a></li>
                 <li><a href="#projects" class="nav-link" data-nav="projects">Projects</a></li>
+                <li><a href="#stats" class="nav-link" data-nav="stats">Stats</a></li>
+                <li><a href="#certifications" class="nav-link" data-nav="certifications">Certifications</a></li>
                 <li><a href="#experience" class="nav-link" data-nav="experience">Experience</a></li>
                 <li><a href="#contact" class="nav-link" data-nav="contact">Contact</a></li>
             </ul>
@@ -206,8 +208,10 @@
                     <li><a href="#about" class="mob-link" data-mob="0">About</a></li>
                     <li><a href="#stack" class="mob-link" data-mob="1">Stack</a></li>
                     <li><a href="#projects" class="mob-link" data-mob="2">Projects</a></li>
-                    <li><a href="#experience" class="mob-link" data-mob="3">Experience</a></li>
-                    <li><a href="#contact" class="mob-link" data-mob="4">Contact</a></li>
+                    <li><a href="#stats" class="mob-link" data-mob="3">Stats</a></li>
+                    <li><a href="#certificates" class="mob-link" data-mob="4">Certificates</a></li>
+                    <li><a href="#experience" class="mob-link" data-mob="5">Experience</a></li>
+                    <li><a href="#contact" class="mob-link" data-mob="6">Contact</a></li>
                 </ul>
             </nav>
             <div class="mob-footer">
@@ -1480,6 +1484,124 @@
         </div>
     </section>
 
+    <!-- ============================================================
+     STATS SECTION — GitHub & LeetCode Heatmaps
+     Paste this AFTER your projects section (#projects) and
+     BEFORE your experience section (#experience).
+
+     Also add  <a href="#stats">Stats</a>  to your nav links.
+     ============================================================ -->
+
+<section id="stats">
+  <div class="container">
+
+    <div class="section-label">04 — Stats</div>
+    <h2 class="section-title">Activity &amp; contributions</h2>
+    <p class="section-subtitle">
+      Real-time coding activity across GitHub and LeetCode.
+    </p>
+
+    <!-- GitHub Heatmap -->
+    <div class="stats-card" id="gh-card">
+      <div class="stats-card-header">
+        <div class="platform-info">
+          <div class="platform-icon platform-icon--github">
+            <svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+              <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38
+                       0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13
+                       -.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66
+                       .07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15
+                       -.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27
+                       .68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12
+                       .51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48
+                       0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8
+                       c0-4.42-3.58-8-8-8z"/>
+            </svg>
+          </div>
+          <div>
+            <span class="platform-name">GitHub</span>
+            <span class="platform-handle">adarsh-arya-23</span>
+          </div>
+        </div>
+        <span class="platform-stat" id="gh-total">Loading…</span>
+      </div>
+
+      <div class="heatmap-month-labels" id="gh-months"></div>
+      <div class="heatmap-scroll">
+        <div class="heatmap-grid" id="gh-grid">
+          <div class="heatmap-skeleton" id="gh-skeleton"></div>
+        </div>
+      </div>
+      <div class="heatmap-legend">
+        <span>Less</span>
+        <div class="legend-cells" id="gh-legend"></div>
+        <span>More</span>
+      </div>
+    </div><!-- /GitHub card -->
+
+    <!-- LeetCode Heatmap -->
+    <div class="stats-card" id="lc-card">
+      <div class="stats-card-header">
+        <div class="platform-info">
+          <div class="platform-icon platform-icon--leetcode">
+            <!-- LeetCode logo path (simplified) -->
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M13.483 0a1.374 1.374 0 0 0-.961.438L7.116 6.226l-3.854 4.126
+                       a5.266 5.266 0 0 0-1.209 2.104 5.35 5.35 0 0 0-.125.513
+                       5.527 5.527 0 0 0 .062 2.362 5.83 5.83 0 0 0 .349 1.017
+                       5.938 5.938 0 0 0 1.271 1.818l4.277 4.193.039.038
+                       c2.248 2.165 5.852 2.133 8.063-.074l2.396-2.392
+                       c.54-.54.54-1.414.003-1.955a1.378 1.378 0 0 0-1.951-.003l-2.396 2.392
+                       a3.021 3.021 0 0 1-4.205.038l-.02-.019-4.276-4.193
+                       c-.652-.64-.972-1.469-.948-2.263a2.68 2.68 0 0 1 .066-.523
+                       2.545 2.545 0 0 1 .619-1.164L9.13 8.114c1.058-1.134 3.204-1.27 4.43-.278l3.501 2.831
+                       c.593.48 1.461.387 1.94-.207a1.384 1.384 0 0 0-.207-1.943l-3.5-2.831
+                       c-.8-.647-1.766-1.045-2.774-1.202l2.015-2.158A1.384 1.384 0 0 0 13.483 0z
+                       m-2.866 12.815a1.38 1.38 0 0 0-1.38 1.382 1.38 1.38 0 0 0 1.38 1.382H20.79
+                       a1.38 1.38 0 0 0 1.38-1.382 1.38 1.38 0 0 0-1.38-1.382z"/>
+            </svg>
+          </div>
+          <div>
+            <span class="platform-name">LeetCode</span>
+            <span class="platform-handle">adarsharya7073</span>
+          </div>
+        </div>
+        <span class="platform-stat" id="lc-total">Loading…</span>
+      </div>
+
+      <div class="heatmap-month-labels" id="lc-months"></div>
+      <div class="heatmap-scroll">
+        <div class="heatmap-grid" id="lc-grid"></div>
+      </div>
+      <div class="heatmap-legend">
+        <span>Less</span>
+        <div class="legend-cells" id="lc-legend"></div>
+        <span>More</span>
+      </div>
+
+      <!-- LeetCode breakdown pills -->
+      <div class="lc-breakdown">
+        <div class="lc-pill lc-easy">
+          <span class="lc-pill-num" id="lc-easy">—</span>
+          <span class="lc-pill-lbl">Easy</span>
+        </div>
+        <div class="lc-pill lc-medium">
+          <span class="lc-pill-num" id="lc-med">—</span>
+          <span class="lc-pill-lbl">Medium</span>
+        </div>
+        <div class="lc-pill lc-hard">
+          <span class="lc-pill-num" id="lc-hard">—</span>
+          <span class="lc-pill-lbl">Hard</span>
+        </div>
+        <div class="lc-pill">
+          <span class="lc-pill-num" id="lc-rank">—</span>
+          <span class="lc-pill-lbl">Global rank</span>
+        </div>
+      </div>
+    </div><!-- /LeetCode card -->
+
+  </div><!-- /container -->
+</section>
 
     <!-- ─── CERTIFICATIONS ──────────────────────────────────────────── -->
     <!-- Add this AFTER the experience section and BEFORE the testimonials section -->
@@ -4081,6 +4203,230 @@ INTEGRATION NOTES — READ BEFORE ADDING TO index.html
     </style>
 
     <script src="main.js"></script>
+    <script>
+(function () {
+  /* ── colour palettes (dark-portfolio optimised) ── */
+  const GH_COLORS  = ['#161b22', '#0e4429', '#006d32', '#26a641', '#39d353'];
+  const LC_COLORS  = ['#1a1a1a', '#3a2e00', '#7a5c00', '#c07800', '#FFA116'];
+  const MONTHS     = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+  /* ── helpers ── */
+  function levelColor(count, max, palette) {
+    if (!count || max === 0) return palette[0];
+    const idx = Math.min(Math.ceil((count / max) * (palette.length - 1)), palette.length - 1);
+    return palette[idx];
+  }
+
+  function buildGrid(gridId, weeks, maxVal, palette) {
+    const grid = document.getElementById(gridId);
+    if (!grid) return;
+    grid.innerHTML = '';
+    weeks.forEach(week => {
+      const col = document.createElement('div');
+      col.className = 'hm-col';
+      week.forEach(day => {
+        const cell = document.createElement('div');
+        cell.className = 'hm-cell';
+        cell.style.background = levelColor(day.count, maxVal, palette);
+        cell.title = `${day.date}  ·  ${day.count} submission${day.count !== 1 ? 's' : ''}`;
+        col.appendChild(cell);
+      });
+      grid.appendChild(col);
+    });
+  }
+
+  function buildMonths(monthsId, weeks) {
+    const el = document.getElementById(monthsId);
+    if (!el) return;
+    el.innerHTML = '';
+    let lastMonth = -1;
+    weeks.forEach(week => {
+      const span = document.createElement('span');
+      span.className = 'hm-month';
+      const firstDay = week.find(d => d.date);
+      if (firstDay) {
+        const m = new Date(firstDay.date).getMonth();
+        if (m !== lastMonth) { span.textContent = MONTHS[m]; lastMonth = m; }
+      }
+      el.appendChild(span);
+    });
+  }
+
+  function buildLegend(legendId, palette) {
+    const el = document.getElementById(legendId);
+    if (!el) return;
+    el.innerHTML = '';
+    palette.forEach(c => {
+      const d = document.createElement('div');
+      d.className = 'hm-cell';
+      d.style.background = c;
+      el.appendChild(d);
+    });
+  }
+
+  /* chunk array into weeks */
+  function toWeeks(days) {
+    const weeks = [];
+    for (let i = 0; i < days.length; i += 7) weeks.push(days.slice(i, i + 7));
+    return weeks;
+  }
+
+  /* generate last-365-days skeleton */
+  function last365() {
+    const days = [];
+    const end = new Date();
+    for (let i = 364; i >= 0; i--) {
+      const d = new Date(end);
+      d.setDate(d.getDate() - i);
+      days.push({ date: d.toISOString().slice(0, 10), count: 0 });
+    }
+    return days;
+  }
+
+  /* ── GitHub ── */
+  async function loadGitHub() {
+    buildLegend('gh-legend', GH_COLORS);
+
+    // Use the public GitHub contributions API (no auth needed)
+    // Fallback: gh-calendar style API
+    const USERNAME = 'adarsh-arya-23';
+    const APIS = [
+      `https://github-contributions-api.jogruber.de/v4/${USERNAME}?y=last`,
+      `https://gh-contributions-api.vercel.app/api/${USERNAME}`
+    ];
+
+    let data = null;
+    for (const url of APIS) {
+      try {
+        const r = await fetch(url, { signal: AbortSignal.timeout(8000) });
+        if (r.ok) { data = await r.json(); break; }
+      } catch (_) {}
+    }
+
+    if (!data || !data.contributions) {
+      // fallback: use GitHub's SVG embed (always works, no CORS)
+      useSVGFallback();
+      return;
+    }
+
+    const flat = data.contributions;          // [{date, count}, …]
+    const total = flat.reduce((s, d) => s + d.count, 0);
+    const el = document.getElementById('gh-total');
+    if (el) el.innerHTML = `<strong>${total.toLocaleString()}</strong> contributions this year`;
+
+    const maxVal = Math.max(...flat.map(d => d.count), 1);
+    const weeks  = toWeeks(flat);
+    buildGrid('gh-grid', weeks, maxVal, GH_COLORS);
+    buildMonths('gh-months', weeks);
+  }
+
+  function useSVGFallback() {
+    const el = document.getElementById('gh-grid');
+    if (!el) return;
+    // Embed GitHub's own contribution graph as an image (always works)
+    el.innerHTML = `
+      <div style="width:100%;overflow:hidden;border-radius:8px;">
+        <img
+          src="https://ghchart.rshah.org/39d353/adarsh-arya-23"
+          alt="GitHub contribution chart"
+          style="width:100%;height:auto;display:block;"
+          onerror="this.parentElement.innerHTML='<p style=\'font-size:13px;color:#7d8590\'>Could not load GitHub chart. <a href=\'https://github.com/adarsh-arya-23\' target=\'_blank\' rel=\'noopener\'>View on GitHub ↗</a></p>'"
+        />
+      </div>`;
+    const stat = document.getElementById('gh-total');
+    if (stat) stat.innerHTML = `View profile on <a href="https://github.com/adarsh-arya-23" target="_blank" rel="noopener" style="color:#39d353">GitHub ↗</a>`;
+    document.getElementById('gh-months').style.display = 'none';
+  }
+
+  /* ── LeetCode ── */
+async function loadLeetCode() {
+  buildLegend('lc-legend', LC_COLORS);
+  const USERNAME = 'adarsharya7073';
+  const WORKER = 'https://leetcode-heatmap.adarsharya7073.workers.dev/';
+
+  const query = `
+  query userProfile($username: String!) {
+    matchedUser(username: $username) {
+      profile { ranking }
+      submitStatsGlobal {
+        acSubmissionNum { difficulty count }
+      }
+    }
+    userProgressCalendarV2(username: $username) {
+      submissionCalendar
+    }
+  }
+`;
+
+  try {
+    const r = await fetch(WORKER, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ query, variables: { username: USERNAME } }),
+      signal: AbortSignal.timeout(15000)
+    });
+
+    console.log('Worker status:', r.status);
+    const text = await r.text();
+    console.log('Worker response:', text);
+
+    const { data } = JSON.parse(text);
+    const user = data?.matchedUser;
+    const cal  = data?.userProgressCalendarV2;
+
+    if (user) {
+      const stats = user.submitStatsGlobal?.acSubmissionNum ?? [];
+      const get   = (d) => stats.find(s => s.difficulty === d)?.count ?? '—';
+      const elTotal = document.getElementById('lc-total');
+      if (elTotal) elTotal.innerHTML = `<strong>${get('All')}</strong> problems solved`;
+      setText('lc-easy', get('Easy'));
+      setText('lc-med',  get('Medium'));
+      setText('lc-hard', get('Hard'));
+      const rank = user.profile?.ranking;
+      setText('lc-rank', rank ? `#${Number(rank).toLocaleString()}` : '—');
+    }
+
+    if (cal?.submissionCalendar) {
+      const parsed = typeof cal.submissionCalendar === 'string'
+        ? JSON.parse(cal.submissionCalendar) : cal.submissionCalendar;
+      const base = last365();
+      Object.entries(parsed).forEach(([ts, cnt]) => {
+        const dateStr = new Date(Number(ts) * 1000).toISOString().slice(0, 10);
+        const hit = base.find(x => x.date === dateStr);
+        if (hit) hit.count = Number(cnt);
+      });
+      const maxVal = Math.max(...base.map(d => d.count), 1);
+      buildGrid('lc-grid', toWeeks(base), maxVal, LC_COLORS);
+      buildMonths('lc-months', toWeeks(base));
+      return;
+    }
+
+  } catch (err) {
+    console.error('LeetCode load error:', err);
+  }
+
+  buildDemoLC();
+}
+
+function buildDemoLC() {
+    /* Shows an empty grid if API is unavailable */
+    const days   = last365().map(d => ({ ...d, count: 0 }));
+    const weeks  = toWeeks(days);
+    buildGrid('lc-grid', weeks, 1, LC_COLORS);
+    buildMonths('lc-months', weeks);
+  }
+
+  function setText(id, val) {
+    const el = document.getElementById(id);
+    if (el) el.textContent = val;
+  }
+
+  /* ── Init ── */
+  loadGitHub();
+  loadLeetCode();
+})();
+</script>
+
 </body>
 
 </html>

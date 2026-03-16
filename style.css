@@ -1337,3 +1337,164 @@ body.resume-modal-open { overflow: hidden; }
     .cert-modal-card, .cert-modal-backdrop, .cert-modal-img, .cert-modal-close { transition: none !important; animation: none !important; }
     .cms-shimmer { animation: none; background: rgba(255,255,255,0.05); }
 }
+
+
+#stats {
+  padding: 6rem 0;
+}
+
+/* ---- Cards ---- */
+.stats-card {
+  background: var(--card-bg, #0d1117);
+  border: 1px solid var(--border, rgba(255,255,255,0.08));
+  border-radius: 16px;
+  padding: 1.5rem 1.75rem;
+  margin-bottom: 1.5rem;
+}
+
+/* ---- Card header ---- */
+.stats-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.platform-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.platform-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.platform-icon--github  { background: #161b22; color: #e6edf3; border: 1px solid rgba(255,255,255,0.1); }
+.platform-icon--leetcode { background: #1a1a1a; color: #FFA116; border: 1px solid rgba(255,161,22,0.25); }
+
+.platform-name {
+  display: block;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-primary, #e6edf3);
+  letter-spacing: -0.01em;
+}
+.platform-handle {
+  display: block;
+  font-size: 0.78rem;
+  color: var(--text-muted, #7d8590);
+  margin-top: 1px;
+}
+
+.platform-stat {
+  font-size: 0.82rem;
+  color: var(--text-muted, #7d8590);
+}
+.platform-stat strong {
+  color: var(--text-primary, #e6edf3);
+  font-weight: 600;
+}
+
+/* ---- Month labels ---- */
+.heatmap-month-labels {
+  display: flex;
+  gap: 0;
+  margin-bottom: 5px;
+  padding-left: 2px;
+  min-height: 14px;
+  font-size: 10px;
+  color: var(--text-muted, #7d8590);
+  letter-spacing: 0.02em;
+}
+.hm-month {
+  display: inline-block;
+  width: 14px;           /* matches cell+gap = 11+3 */
+  flex-shrink: 0;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+/* ---- Heatmap grid ---- */
+.heatmap-scroll {
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+.heatmap-grid {
+  display: flex;
+  gap: 3px;
+  min-width: max-content;
+}
+.hm-col {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.hm-cell {
+  width: 11px;
+  height: 11px;
+  border-radius: 2px;
+  cursor: default;
+  transition: opacity 0.15s;
+}
+.hm-cell:hover { opacity: 0.7; }
+
+/* ---- Legend ---- */
+.heatmap-legend {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 10px;
+  font-size: 11px;
+  color: var(--text-muted, #7d8590);
+}
+.legend-cells {
+  display: flex;
+  gap: 3px;
+}
+
+/* ---- LeetCode breakdown ---- */
+.lc-breakdown {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-top: 1.25rem;
+}
+.lc-pill {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 10px;
+  padding: 10px 14px;
+  text-align: center;
+}
+.lc-pill-num {
+  display: block;
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--text-primary, #e6edf3);
+  line-height: 1.2;
+}
+.lc-pill-lbl {
+  display: block;
+  font-size: 0.72rem;
+  color: var(--text-muted, #7d8590);
+  margin-top: 3px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.lc-easy   .lc-pill-num { color: #00b8a3; }
+.lc-medium .lc-pill-num { color: #ffc01e; }
+.lc-hard   .lc-pill-num { color: #ff375f; }
+
+/* ---- Responsive ---- */
+@media (max-width: 600px) {
+  .lc-breakdown { grid-template-columns: repeat(2, 1fr); }
+  .stats-card   { padding: 1.1rem 1rem; }
+}
