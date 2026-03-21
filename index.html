@@ -378,7 +378,7 @@
                 </div>
                 <div class="hero-float-card hfc-3">
                     <span class="hfc-icon">&#x2B50;</span>
-                    <div class="hfc-text"><strong>4&#x2605; C++</strong><small>HackerRank</small></div>
+                    <div class="hfc-text"><strong>5&#x2605; C++</strong><small>HackerRank</small></div>
                 </div>
 
             </div><!-- /hero-visual -->
@@ -463,7 +463,7 @@
                             <span class="card-icon">&#x1F680;</span>
                             <div>
                                 <span class="card-title">GitHub</span>
-                                <span class="card-sub">500+ commits</span>
+                                <span class="card-sub">150+ commits</span>
                             </div>
                         </div>
 
@@ -4352,78 +4352,140 @@ INTEGRATION NOTES — READ BEFORE ADDING TO index.html
             async function loadLeetCode() {
                 buildLegend('lc-legend', LC_COLORS);
                 const USERNAME = 'adarsharya7073';
-                const WORKER = 'https://leetcode-heatmap.adarsharya7073.workers.dev/';
 
-                const query = `
+                /* ── 1. Check localStorage cache (1-hour TTL) ── */
+                const CACHE_KEY = `lc_data_${USERNAME}`;
+                const CACHE_TTL = 60 * 60 * 1000; // 1 hour in ms
+                try {
+                    const cached = localStorage.getItem(CACHE_KEY);
+                    if (cached) {
+                        const { ts, payload } = JSON.parse(cached);
+                        if (Date.now() - ts < CACHE_TTL) {
+                            console.log('[LeetCode] Rendering from cache');
+                            renderLCData(payload);
+                            return;
+                        }
+                    }
+                } catch (_) { /* ignore corrupted cache */ }
+
+                /* ── 2. Strategy A: Your Cloudflare Worker ── */
+                const WORKER = 'https://leetcode-heatmap.adarsharya7073.workers.dev/';
+                const GQL_QUERY = `
   query userProfile($username: String!) {
     matchedUser(username: $username) {
       profile { ranking }
-      submitStatsGlobal {
-        acSubmissionNum { difficulty count }
-      }
+      submitStatsGlobal { acSubmissionNum { difficulty count } }
     }
-    userProgressCalendarV2(username: $username) {
-      submissionCalendar
-    }
-  }
-`;
+    userProgressCalendarV2(username: $username) { submissionCalendar }
+  }`;
+
+                let payload = null;
 
                 try {
                     const r = await fetch(WORKER, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ query, variables: { username: USERNAME } }),
-                        signal: AbortSignal.timeout(15000)
+                        body: JSON.stringify({ query: GQL_QUERY, variables: { username: USERNAME } }),
+                        signal: AbortSignal.timeout(6000)
                     });
-
-                    console.log('Worker status:', r.status);
-                    const text = await r.text();
-                    console.log('Worker response:', text);
-
-                    const { data } = JSON.parse(text);
-                    const user = data?.matchedUser;
-                    const cal = data?.userProgressCalendarV2;
-
-                    if (user) {
-                        const stats = user.submitStatsGlobal?.acSubmissionNum ?? [];
-                        const get = (d) => stats.find(s => s.difficulty === d)?.count ?? '—';
-                        const elTotal = document.getElementById('lc-total');
-                        if (elTotal) elTotal.innerHTML = `<strong>${get('All')}</strong> problems solved`;
-                        setText('lc-easy', get('Easy'));
-                        setText('lc-med', get('Medium'));
-                        setText('lc-hard', get('Hard'));
-                        const rank = user.profile?.ranking;
-                        setText('lc-rank', rank ? `#${Number(rank).toLocaleString()}` : '—');
+                    if (r.ok) {
+                        const { data } = await r.json();
+                        if (data?.matchedUser && data?.userProgressCalendarV2) {
+                            const stats = data.matchedUser.submitStatsGlobal?.acSubmissionNum ?? [];
+                            const get = d => stats.find(s => s.difficulty === d)?.count ?? 0;
+                            payload = {
+                                solved: get('All'),
+                                easy: get('Easy'), medium: get('Medium'), hard: get('Hard'),
+                                rank: data.matchedUser.profile?.ranking,
+                                calendar: data.userProgressCalendarV2.submissionCalendar
+                            };
+                            console.log('[LeetCode] Loaded from Worker');
+                        }
                     }
-
-                    if (cal?.submissionCalendar) {
-                        const parsed = typeof cal.submissionCalendar === 'string'
-                            ? JSON.parse(cal.submissionCalendar) : cal.submissionCalendar;
-                        const base = last365();
-                        Object.entries(parsed).forEach(([ts, cnt]) => {
-                            const dateStr = new Date(Number(ts) * 1000).toISOString().slice(0, 10);
-                            const hit = base.find(x => x.date === dateStr);
-                            if (hit) hit.count = Number(cnt);
-                        });
-                        const maxVal = Math.max(...base.map(d => d.count), 1);
-                        buildGrid('lc-grid', toWeeks(base), maxVal, LC_COLORS);
-                        buildMonths('lc-months', toWeeks(base));
-                        return;
-                    }
-
                 } catch (err) {
-                    console.error('LeetCode load error:', err);
+                    console.warn('[LeetCode] Worker failed:', err.message);
                 }
 
-                buildDemoLC();
+                /* ── 3. Strategy B: alfa-leetcode-api (reliable public API) ── */
+                if (!payload) {
+                    try {
+                        const BASE = `https://alfa-leetcode-api.onrender.com/${USERNAME}`;
+                        const [calRes, solvedRes] = await Promise.all([
+                            fetch(`${BASE}/calendar`, { signal: AbortSignal.timeout(10000) }),
+                            fetch(`${BASE}/solved`,   { signal: AbortSignal.timeout(10000) })
+                        ]);
+
+                        if (calRes.ok && solvedRes.ok) {
+                            const calData    = await calRes.json();
+                            const solvedData = await solvedRes.json();
+
+                            payload = {
+                                solved: solvedData.solvedProblem ?? 0,
+                                easy:   solvedData.easySolved   ?? 0,
+                                medium: solvedData.mediumSolved ?? 0,
+                                hard:   solvedData.hardSolved   ?? 0,
+                                rank:   null,               // not available from this endpoint
+                                calendar: calData.submissionCalendar
+                            };
+                            console.log('[LeetCode] Loaded from alfa-leetcode-api');
+                        }
+                    } catch (err) {
+                        console.warn('[LeetCode] alfa-leetcode-api failed:', err.message);
+                    }
+                }
+
+                /* ── 4. Render or fallback ── */
+                if (payload) {
+                    try {
+                        localStorage.setItem(CACHE_KEY, JSON.stringify({ ts: Date.now(), payload }));
+                    } catch (_) { /* storage quota exceeded — silently skip */ }
+                    renderLCData(payload);
+                } else {
+                    console.warn('[LeetCode] All strategies failed — showing empty grid');
+                    buildDemoLC();
+                }
+            }
+
+            /* Shared render function used by all strategies + cache */
+            function renderLCData(payload) {
+                const { solved, easy, medium, hard, rank, calendar } = payload;
+
+                /* Update stat badges */
+                const elTotal = document.getElementById('lc-total');
+                if (elTotal) elTotal.innerHTML = `<strong>${solved}</strong> problems solved`;
+                setText('lc-easy',  easy   || '—');
+                setText('lc-med',  medium  || '—');
+                setText('lc-hard', hard    || '—');
+                setText('lc-rank', rank ? `#${Number(rank).toLocaleString()}` : '—');
+
+                /* Parse + render calendar heatmap */
+                const base = last365();
+                if (calendar) {
+                    const parsed = typeof calendar === 'string' ? JSON.parse(calendar) : calendar;
+                    Object.entries(parsed).forEach(([ts, cnt]) => {
+                        const dateStr = new Date(Number(ts) * 1000).toISOString().slice(0, 10);
+                        const hit = base.find(x => x.date === dateStr);
+                        if (hit) hit.count = Number(cnt);
+                    });
+                }
+                const maxVal = Math.max(...base.map(d => d.count), 1);
+                const weeks  = toWeeks(base);
+                buildGrid('lc-grid', weeks, maxVal, LC_COLORS);
+                buildMonths('lc-months', weeks);
             }
 
             function buildDemoLC() {
-                /* Shows an empty grid if API is unavailable */
-                const days = last365().map(d => ({ ...d, count: 0 }));
+                /* Graceful empty-grid fallback with a subtle status message */
+                const days  = last365().map(d => ({ ...d, count: 0 }));
                 const weeks = toWeeks(days);
                 buildGrid('lc-grid', weeks, 1, LC_COLORS);
                 buildMonths('lc-months', weeks);
+
+                const elTotal = document.getElementById('lc-total');
+                if (elTotal) elTotal.innerHTML =
+                    `<span style="color:#7d8590;font-size:12px;">Data unavailable — ` +
+                    `<a href="https://leetcode.com/u/adarsharya7073/" target="_blank" ` +
+                    `rel="noopener" style="color:#FFA116;">View on LeetCode ↗</a></span>`;
             }
 
             function setText(id, val) {
