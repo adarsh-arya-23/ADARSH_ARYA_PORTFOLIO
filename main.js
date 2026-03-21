@@ -520,21 +520,36 @@ function initForm() {
         btn.innerHTML = '<span>Sending…</span>';
         btn.disabled = true;
 
-        await new Promise(r => setTimeout(r, 1400));
+        try {
+            const data = new FormData(form);
+            const response = await fetch('https://api.web3forms.com/submit', {
+                method: 'POST',
+                body: data,
+            });
+            const json = await response.json();
 
-        btn.innerHTML = '<span>✓ Sent!</span>';
-        btn.style.background = 'linear-gradient(135deg, #059669, #34d399)';
+            if (response.ok && json.success) {
+                btn.innerHTML = '<span>✓ Sent!</span>';
+                btn.style.background = 'linear-gradient(135deg, #059669, #34d399)';
+                form.reset();
+                if (success) {
+                    success.classList.add('visible');
+                    setTimeout(() => success.classList.remove('visible'), 5000);
+                }
+            } else {
+                btn.innerHTML = '<span>✗ Failed — try again</span>';
+                btn.style.background = 'linear-gradient(135deg, #dc2626, #f87171)';
+            }
+        } catch {
+            btn.innerHTML = '<span>✗ Network error</span>';
+            btn.style.background = 'linear-gradient(135deg, #dc2626, #f87171)';
+        }
+
         setTimeout(() => {
             btn.innerHTML = orig;
             btn.style.background = '';
             btn.disabled = false;
-        }, 2500);
-
-        form.reset();
-        if (success) {
-            success.classList.add('visible');
-            setTimeout(() => success.classList.remove('visible'), 5000);
-        }
+        }, 3000);
     });
 
     form.querySelectorAll('.form-input').forEach(input => {

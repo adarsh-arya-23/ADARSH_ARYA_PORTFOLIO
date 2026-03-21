@@ -3434,7 +3434,12 @@ INTEGRATION NOTES — READ BEFORE ADDING TO index.html
             <div class="contact-grid">
                 <!-- Left: Form -->
                 <div class="contact-form-wrap" data-reveal>
-                    <form class="contact-form" id="contactForm" novalidate aria-label="Contact form">
+                    <form class="contact-form" id="contactForm" novalidate aria-label="Contact form"
+                        action="https://api.web3forms.com/submit" method="POST">
+                        <!-- Web3Forms hidden inputs -->
+                        <input type="hidden" name="access_key" value="8ab41b19-e6d2-445f-b84d-315c8d5a15d2" />
+                        <input type="hidden" name="subject" value="New message from portfolio" />
+                        <input type="checkbox" name="botcheck" style="display:none;" tabindex="-1" aria-hidden="true" />
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="contact-name" class="form-label">Name</label>
