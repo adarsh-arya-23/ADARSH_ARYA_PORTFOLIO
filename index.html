@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -15,9 +15,9 @@
     <title>Adarsh Arya – Developer Portfolio</title>
 
     <!-- Favicon -->
-    <link rel="icon"             type="image/png" href="images/favicon.png" />
-    <link rel="shortcut icon"    type="image/png" href="images/favicon.png" />
-    <link rel="apple-touch-icon"                  href="images/favicon.png" />
+    <link rel="icon" type="image/png" href="images/favicon.png" />
+    <link rel="shortcut icon" type="image/png" href="images/favicon.png" />
+    <link rel="apple-touch-icon" href="images/favicon.png" />
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -314,7 +314,7 @@
 
                 <div class="hero-stats">
                     <div class="stat">
-                        <span class="stat-num" data-count="10">0</span><span class="stat-suffix">+</span>
+                        <span class="stat-num" data-count="13">0</span><span class="stat-suffix">+</span>
                         <span class="stat-label">Projects Built</span>
                     </div>
                     <div class="stat-divider"></div>
@@ -324,7 +324,7 @@
                     </div>
                     <div class="stat-divider"></div>
                     <div class="stat">
-                        <span class="stat-num" data-count="4">0</span><span class="stat-suffix">&#x2605;</span>
+                        <span class="stat-num" data-count="5">0</span><span class="stat-suffix">&#x2605;</span>
                         <span class="stat-label">HackerRank C++</span>
                     </div>
                 </div>
@@ -375,7 +375,7 @@
                 <!-- Floating badges (kept as-is, they position via CSS) -->
                 <div class="hero-float-card hfc-1">
                     <span class="hfc-icon">&#x1F525;</span>
-                    <div class="hfc-text"><strong>10+</strong><small>Projects Built</small></div>
+                    <div class="hfc-text"><strong>13+</strong><small>Projects Built</small></div>
                 </div>
                 <div class="hero-float-card hfc-2">
                     <span class="hfc-icon">&#x1F3C6;</span>
@@ -700,11 +700,11 @@
             <div class="proj-filters" data-reveal role="group" aria-label="Filter projects by category">
                 <button class="proj-filter active" data-pf="all" id="pf-all" aria-pressed="true">
                     <span class="pf-label">All Projects</span>
-                    <span class="pf-count">10</span>
+                    <span class="pf-count">13</span>
                 </button>
                 <button class="proj-filter" data-pf="web" id="pf-web" aria-pressed="false">
                     <span class="pf-label">Web Dev</span>
-                    <span class="pf-count">7</span>
+                    <span class="pf-count">9</span>
                 </button>
                 <button class="proj-filter" data-pf="ai" id="pf-ai" aria-pressed="false">
                     <span class="pf-label">AI</span>
@@ -712,20 +712,20 @@
                 </button>
                 <button class="proj-filter" data-pf="uiux" id="pf-uiux" aria-pressed="false">
                     <span class="pf-label">UI/UX</span>
-                    <span class="pf-count">3</span>
+                    <span class="pf-count">4</span>
                 </button>
                 <button class="proj-filter" data-pf="fullstack" id="pf-fullstack" aria-pressed="false">
                     <span class="pf-label">Full Stack</span>
-                    <span class="pf-count">2</span>
+                    <span class="pf-count">4</span>
                 </button>
             </div>
 
-            <!-- Project grid -->
-            <div class="projects-grid-v2" id="projectsGrid">
+            <!-- Project grid — JS organises cards into Featured / WIP / All Others sections -->
+            <div class="proj-sections-container" id="projectsGrid">
 
                 <!-- ── Project 1 (Featured, full-width) ─────────── -->
-                <article class="proj-card proj-card--featured" data-pc="web fullstack uiux" data-reveal
-                    id="proj-habitflow">
+                <article class="proj-card" data-pc="web fullstack uiux" data-reveal id="proj-habitflow">
+                    <div class="proj-featured-ribbon" aria-label="Featured project">⭐ Featured</div>
                     <div class="proj-img-wrap">
                         <div class="proj-img"
                             style="background: linear-gradient(135deg, #0f0a1e 0%, #1a0f3a 40%, #0d1f40 100%);">
@@ -834,6 +834,7 @@
 
                 <!-- ── Project 2 ─────────────────────────────────── -->
                 <article class="proj-card" data-pc="web" data-reveal id="proj-riderent">
+                    <div class="proj-featured-ribbon" aria-label="Featured project">⭐ Featured</div>
                     <div class="proj-img-wrap">
                         <div class="proj-img" style="background: linear-gradient(135deg, #020a1a 0%, #0c1d35 100%);">
                             <div class="proj-code-mockup">
@@ -912,6 +913,7 @@
 
                 <!-- ── Project 3 ─────────────────────────────────── -->
                 <article class="proj-card" data-pc="ai" data-reveal id="proj-margdarshak">
+                    <div class="proj-featured-ribbon" aria-label="Featured project">⭐ Featured</div>
                     <div class="proj-img-wrap">
                         <div class="proj-img" style="background: linear-gradient(135deg, #011a0e 0%, #022c22 100%);">
                             <div class="proj-ai-mockup">
@@ -964,6 +966,11 @@
                             <span class="proj-tag">Phi-3 Mini</span>
                         </div>
                         <div class="proj-links">
+                            <a href="#" class="proj-link-btn proj-link-btn--unavailable" aria-disabled="true"
+                                id="proj3-demo" tabindex="-1">
+                                <i data-lucide="clock"></i>
+                                <span>Local LLM Only</span>
+                            </a>
                             <a href="https://github.com/adarsh-arya-23/MARGDARSHAK"
                                 class="proj-link-btn proj-link-btn--ghost" id="proj3-github" target="_blank"
                                 rel="noopener noreferrer">
@@ -1402,12 +1409,24 @@
                             <span class="proj-tag">Face Detection</span>
                             <span class="proj-tag">Dashboard</span>
                         </div>
-                        <!-- No links yet – coming soon -->
+                        <div class="proj-links">
+                            <a href="#" class="proj-link-btn proj-link-btn--unavailable" aria-disabled="true"
+                                id="proj9-demo" tabindex="-1">
+                                <i data-lucide="clock"></i>
+                                <span>In Development</span>
+                            </a>
+                            <a href="https://github.com/adarsh-arya-23" class="proj-link-btn proj-link-btn--ghost"
+                                id="proj9-github" target="_blank" rel="noopener noreferrer">
+                                <i data-lucide="github"></i>
+                                <span>Repository</span>
+                            </a>
+                        </div>
                     </div>
                 </article>
 
                 <!-- ── Project 10 ─────────────────────────────────── -->
                 <article class="proj-card" data-pc="web fullstack" data-reveal id="proj-codexaminer">
+                    <div class="proj-featured-ribbon" aria-label="Featured project">⭐ Featured</div>
                     <div class="proj-img-wrap">
                         <div class="proj-img"
                             style="background: linear-gradient(135deg, #0f1a0f 0%, #1a2e00 50%, #0a1a0a 100%);">
@@ -1466,6 +1485,11 @@
                             <span class="proj-tag">Judge System</span>
                         </div>
                         <div class="proj-links">
+                            <a href="#" class="proj-link-btn proj-link-btn--unavailable" aria-disabled="true"
+                                id="proj10-demo" tabindex="-1">
+                                <i data-lucide="cpu"></i>
+                                <span>C++ Engine</span>
+                            </a>
                             <a href="https://github.com/adarsh-arya-23/CodeXaminer"
                                 class="proj-link-btn proj-link-btn--ghost" id="proj10-github" target="_blank"
                                 rel="noopener noreferrer">
@@ -1476,7 +1500,271 @@
                     </div>
                 </article>
 
-            </div><!-- /projects-grid-v2 -->
+                <!-- ── Project 11 (FitKart) ──────────────────────────── -->
+                <article class="proj-card" data-pc="web fullstack" data-reveal id="proj-fitkart">
+                    <div class="proj-featured-ribbon" aria-label="Featured project">⭐ Featured</div>
+                    <div class="proj-img-wrap">
+                        <div class="proj-img"
+                            style="background: linear-gradient(135deg, #0a0418 0%, #1a0a38 40%, #0d1a30 100%);">
+                            <div class="proj-browser">
+                                <div class="proj-browser-bar">
+                                    <span class="pb-dot" style="background:#ff5f57"></span>
+                                    <span class="pb-dot" style="background:#febc2e"></span>
+                                    <span class="pb-dot" style="background:#28c840"></span>
+                                    <span class="pb-url">fitkartshop.netlify.app</span>
+                                </div>
+                                <div class="proj-browser-screen">
+                                    <div class="pb-sidebar">
+                                        <div class="pb-nav-item active"></div>
+                                        <div class="pb-nav-item"></div>
+                                        <div class="pb-nav-item"></div>
+                                        <div class="pb-nav-item"></div>
+                                    </div>
+                                    <div class="pb-body">
+                                        <div class="pb-stat-row">
+                                            <div class="pb-stat" style="--c:#a855f7">
+                                                <div class="pb-stat-num">E-Commerce</div>
+                                                <div class="pb-stat-lbl">Platform</div>
+                                            </div>
+                                            <div class="pb-stat" style="--c:#06b6d4">
+                                                <div class="pb-stat-num">Stripe</div>
+                                                <div class="pb-stat-lbl">Payments</div>
+                                            </div>
+                                            <div class="pb-stat" style="--c:#10b981">
+                                                <div class="pb-stat-num">Live</div>
+                                                <div class="pb-stat-lbl">Deployed</div>
+                                            </div>
+                                        </div>
+                                        <div class="pb-chart">
+                                            <div class="pb-bar" style="--h:75%;--c:#a855f7"></div>
+                                            <div class="pb-bar" style="--h:90%;--c:#a855f7"></div>
+                                            <div class="pb-bar" style="--h:60%;--c:#a855f7"></div>
+                                            <div class="pb-bar" style="--h:85%;--c:#a855f7"></div>
+                                            <div class="pb-bar" style="--h:70%;--c:#a855f7"></div>
+                                            <div class="pb-bar" style="--h:95%;--c:#a855f7"></div>
+                                            <div class="pb-bar" style="--h:80%;--c:#a855f7"></div>
+                                        </div>
+                                        <div class="pb-heatmap">
+                                            <div class="pb-heat" style="--op:0.4"></div>
+                                            <div class="pb-heat" style="--op:0.7"></div>
+                                            <div class="pb-heat" style="--op:1.0"></div>
+                                            <div class="pb-heat" style="--op:0.6"></div>
+                                            <div class="pb-heat" style="--op:0.9"></div>
+                                            <div class="pb-heat" style="--op:0.5"></div>
+                                            <div class="pb-heat" style="--op:0.8"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="proj-img-glow" style="--g:#a855f7"></div>
+                        <div class="proj-hover-overlay">
+                            <a href="https://fitkartshop.netlify.app/" class="proj-overlay-btn" id="proj11-preview"
+                                target="_blank" rel="noopener noreferrer">
+                                <i data-lucide="eye"></i> Preview
+                            </a>
+                            <a href="https://github.com/adarsh-arya-23/FitKart/tree/main"
+                                class="proj-overlay-btn proj-overlay-btn--ghost" id="proj11-src" target="_blank"
+                                rel="noopener noreferrer">
+                                <i data-lucide="github"></i> Source
+                            </a>
+                        </div>
+                    </div>
+                    <div class="proj-info">
+                        <div class="proj-meta">
+                            <span class="proj-category">Full Stack &middot; E-Commerce</span>
+                            <span class="proj-year">2025</span>
+                            <span class="proj-status proj-status--live">Live</span>
+                        </div>
+                        <h3 class="proj-title">FitKart <span class="proj-title-accent">E-Commerce Platform</span></h3>
+                        <p class="proj-desc">
+                            A production-ready, full-stack e-commerce platform delivering a premium, personalized
+                            shopping experience. Built with Stripe-powered payments, Supabase for real-time data &amp;
+                            auth, and a sleek shadcn/ui component library — blending performance with polish.
+                        </p>
+                        <div class="proj-tags">
+                            <span class="proj-tag">React</span>
+                            <span class="proj-tag">Vite</span>
+                            <span class="proj-tag">Tailwind CSS</span>
+                            <span class="proj-tag">shadcn/ui</span>
+                            <span class="proj-tag">Supabase</span>
+                            <span class="proj-tag">Stripe</span>
+                        </div>
+                        <div class="proj-links">
+                            <a href="https://fitkartshop.netlify.app/" class="proj-link-btn" id="proj11-demo"
+                                target="_blank" rel="noopener noreferrer">
+                                <i data-lucide="external-link"></i>
+                                <span>Live Demo</span>
+                            </a>
+                            <a href="https://github.com/adarsh-arya-23/FitKart/tree/main"
+                                class="proj-link-btn proj-link-btn--ghost" id="proj11-github" target="_blank"
+                                rel="noopener noreferrer">
+                                <i data-lucide="github"></i>
+                                <span>Repository</span>
+                            </a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- ── Project 12 (The Knowledge Net) ──────────────── -->
+                <article class="proj-card" data-pc="web uiux" data-reveal id="proj-knowledgenet">
+                    <div class="proj-img-wrap">
+                        <div class="proj-img"
+                            style="background: linear-gradient(135deg, #001020 0%, #003050 50%, #001828 100%);">
+                            <div class="proj-code-mockup">
+                                <div class="pcm-header">
+                                    <span class="pcm-dot" style="background:#ff5f57"></span>
+                                    <span class="pcm-dot" style="background:#febc2e"></span>
+                                    <span class="pcm-dot" style="background:#28c840"></span>
+                                    <span class="pcm-title">TheKnowledgeNet &mdash; Quiz Platform</span>
+                                </div>
+                                <div class="pcm-body">
+                                    <div class="pcm-line"><span class="pcm-kw">function</span> <span
+                                            class="pcm-fn">checkAnswer</span>(selected) {</div>
+                                    <div class="pcm-line">&nbsp;&nbsp;<span class="pcm-kw">if</span> (selected ===
+                                        correctAnswer) {</div>
+                                    <div class="pcm-line">&nbsp;&nbsp;&nbsp;&nbsp;score++;</div>
+                                    <div class="pcm-line">&nbsp;&nbsp;&nbsp;&nbsp;showFeedback(<span
+                                            class="pcm-str">'correct'</span>);</div>
+                                    <div class="pcm-line">&nbsp;&nbsp;}</div>
+                                    <div class="pcm-line">&nbsp;&nbsp;nextQuestion();</div>
+                                    <div class="pcm-line">}</div>
+                                </div>
+                                <div class="pcm-result pcm-result--pass">
+                                    <i data-lucide="check-circle"></i>
+                                    Score: 8/10 &middot; Reasoning Test Passed
+                                </div>
+                            </div>
+                        </div>
+                        <div class="proj-img-glow" style="--g:#0ea5e9"></div>
+                        <div class="proj-hover-overlay">
+                            <a href="https://adarsh-arya-23.github.io/TheKnowledgeNet/" class="proj-overlay-btn"
+                                id="proj12-preview" target="_blank" rel="noopener noreferrer">
+                                <i data-lucide="eye"></i> Preview
+                            </a>
+                            <a href="https://github.com/adarsh-arya-23/TheKnowledgeNet"
+                                class="proj-overlay-btn proj-overlay-btn--ghost" id="proj12-src" target="_blank"
+                                rel="noopener noreferrer">
+                                <i data-lucide="github"></i> Source
+                            </a>
+                        </div>
+                    </div>
+                    <div class="proj-info">
+                        <div class="proj-meta">
+                            <span class="proj-category">Web &middot; UI/UX</span>
+                            <span class="proj-year">2025</span>
+                            <span class="proj-status proj-status--live">Live</span>
+                        </div>
+                        <h3 class="proj-title">The Knowledge Net <span class="proj-title-accent">Quiz Platform</span>
+                        </h3>
+                        <p class="proj-desc">
+                            A reasoning-first quiz web platform with category-based challenges, real-time scoring, and a
+                            fully responsive UI/UX. Designed for an engaging, distraction-free test experience across
+                            all devices.
+                        </p>
+                        <div class="proj-tags">
+                            <span class="proj-tag">HTML</span>
+                            <span class="proj-tag">CSS</span>
+                            <span class="proj-tag">JavaScript</span>
+                        </div>
+                        <div class="proj-links">
+                            <a href="https://adarsh-arya-23.github.io/TheKnowledgeNet/" class="proj-link-btn"
+                                id="proj12-demo" target="_blank" rel="noopener noreferrer">
+                                <i data-lucide="external-link"></i>
+                                <span>Live Demo</span>
+                            </a>
+                            <a href="https://github.com/adarsh-arya-23/TheKnowledgeNet"
+                                class="proj-link-btn proj-link-btn--ghost" id="proj12-github" target="_blank"
+                                rel="noopener noreferrer">
+                                <i data-lucide="github"></i>
+                                <span>Repository</span>
+                            </a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- ── Project 13 (Adarsh Arya Portfolio) ─────────── -->
+                <article class="proj-card" data-pc="web fullstack" data-reveal id="proj-portfolio">
+                    <div class="proj-img-wrap">
+                        <div class="proj-img"
+                            style="background: linear-gradient(135deg, #080818 0%, #10102e 50%, #08081a 100%);">
+                            <div class="proj-saas-mockup">
+                                <div class="psm-topbar">
+                                    <div class="psm-logo"
+                                        style="background:linear-gradient(135deg,#6366f1,#a855f7);width:32px;border-radius:8px;">
+                                    </div>
+                                    <div class="psm-nav">
+                                        <div class="psm-nav-item"></div>
+                                        <div class="psm-nav-item"></div>
+                                        <div class="psm-nav-item"></div>
+                                        <div class="psm-btn"
+                                            style="background:linear-gradient(135deg,#6366f1,#a855f7);"></div>
+                                    </div>
+                                </div>
+                                <div class="psm-hero">
+                                    <div class="psm-headline"
+                                        style="width:60%; background:linear-gradient(90deg,#6366f1,#a855f7); border-radius:4px;">
+                                    </div>
+                                    <div class="psm-sub"></div>
+                                    <div class="psm-ctas">
+                                        <div class="psm-cta psm-cta--primary"
+                                            style="background:linear-gradient(135deg,#6366f1,#a855f7);"></div>
+                                        <div class="psm-cta"></div>
+                                    </div>
+                                    <div class="psm-preview"
+                                        style="background:rgba(99,102,241,0.12);border:1px solid rgba(99,102,241,0.3);">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="proj-img-glow" style="--g:#6366f1"></div>
+                        <div class="proj-hover-overlay">
+                            <a href="https://adarsh-arya-portfolio.onrender.com/" class="proj-overlay-btn"
+                                id="proj13-preview" target="_blank" rel="noopener noreferrer">
+                                <i data-lucide="eye"></i> Preview
+                            </a>
+                            <a href="https://github.com/adarsh-arya-23/ADARSH_ARYA_PORTFOLIO"
+                                class="proj-overlay-btn proj-overlay-btn--ghost" id="proj13-src" target="_blank"
+                                rel="noopener noreferrer">
+                                <i data-lucide="github"></i> Source
+                            </a>
+                        </div>
+                    </div>
+                    <div class="proj-info">
+                        <div class="proj-meta">
+                            <span class="proj-category">Full Stack &middot; Portfolio</span>
+                            <span class="proj-year">2025</span>
+                            <span class="proj-status proj-status--live">Live</span>
+                        </div>
+                        <h3 class="proj-title">Adarsh Arya <span class="proj-title-accent">Portfolio</span></h3>
+                        <p class="proj-desc">
+                            A modern, performance-optimised developer portfolio showcasing projects, skills,
+                            certifications, and development journey. Features dark/light theming, animated UI, GitHub
+                            heatmap integration, and a Python-powered backend — all deployed live on Render.
+                        </p>
+                        <div class="proj-tags">
+                            <span class="proj-tag">HTML</span>
+                            <span class="proj-tag">CSS</span>
+                            <span class="proj-tag">JavaScript</span>
+                            <span class="proj-tag">Python</span>
+                        </div>
+                        <div class="proj-links">
+                            <a href="https://adarsh-arya-portfolio.onrender.com/" class="proj-link-btn" id="proj13-demo"
+                                target="_blank" rel="noopener noreferrer">
+                                <i data-lucide="external-link"></i>
+                                <span>Live Demo</span>
+                            </a>
+                            <a href="https://github.com/adarsh-arya-23/ADARSH_ARYA_PORTFOLIO"
+                                class="proj-link-btn proj-link-btn--ghost" id="proj13-github" target="_blank"
+                                rel="noopener noreferrer">
+                                <i data-lucide="github"></i>
+                                <span>Repository</span>
+                            </a>
+                        </div>
+                    </div>
+                </article>
+
+            </div><!-- /proj-sections-container -->
 
             <!-- Footer CTA -->
             <div class="projects-footer" data-reveal>
@@ -1633,11 +1921,11 @@
 
             <!-- ── Filter tabs ─────────────────────────────────────────── -->
             <div class="cert-filters" data-reveal role="group" aria-label="Filter certifications by category">
-                <button class="cert-filter active" data-cf="all" aria-pressed="true">
+                <button class="cert-filter" data-cf="all" aria-pressed="false">
                     <span class="cf-label">All</span>
                     <span class="cf-count">24</span>
                 </button>
-                <button class="cert-filter" data-cf="webdev" aria-pressed="false">
+                <button class="cert-filter active" data-cf="webdev" aria-pressed="true">
                     <span class="cf-label">Web Dev</span>
                     <span class="cf-count">5</span>
                 </button>
@@ -1664,7 +1952,7 @@
 
                 <!-- ── FEATURED: IBM SkillBuild Internship ───────────── -->
                 <div class="cert-card cert-card--featured" data-cc="webdev" data-reveal
-                    data-cert-img="certificates/ibm-skillbuild.jpg.png.png" data-cert-title="Front-End Web Development"
+                    data-cert-img="certificates/ibm-skillbuild.jpg.png" data-cert-title="Front-End Web Development"
                     data-cert-meta="IBM SkillBuild &mdash; AICTE Edunet &middot; Aug&ndash;Sep 2025"
                     data-cert-color="#60a5fa" data-cert-url="">
                     <div class="cert-card-inner">
@@ -2580,6 +2868,8 @@
                                 <span class="cert-tag">HTML</span>
                                 <span class="cert-tag">Web Basics</span>
                             </div>
+                            <p class="cert-desc">Completed a comprehensive HTML tutorial covering fundamental web
+                                development concepts and best practices.</p>
                         </div>
                         <div class="cert-footer">
                             <span class="cert-verified">
@@ -4417,19 +4707,19 @@ INTEGRATION NOTES — READ BEFORE ADDING TO index.html
                         const BASE = `https://alfa-leetcode-api.onrender.com/${USERNAME}`;
                         const [calRes, solvedRes] = await Promise.all([
                             fetch(`${BASE}/calendar`, { signal: AbortSignal.timeout(10000) }),
-                            fetch(`${BASE}/solved`,   { signal: AbortSignal.timeout(10000) })
+                            fetch(`${BASE}/solved`, { signal: AbortSignal.timeout(10000) })
                         ]);
 
                         if (calRes.ok && solvedRes.ok) {
-                            const calData    = await calRes.json();
+                            const calData = await calRes.json();
                             const solvedData = await solvedRes.json();
 
                             payload = {
                                 solved: solvedData.solvedProblem ?? 0,
-                                easy:   solvedData.easySolved   ?? 0,
+                                easy: solvedData.easySolved ?? 0,
                                 medium: solvedData.mediumSolved ?? 0,
-                                hard:   solvedData.hardSolved   ?? 0,
-                                rank:   null,               // not available from this endpoint
+                                hard: solvedData.hardSolved ?? 0,
+                                rank: null,               // not available from this endpoint
                                 calendar: calData.submissionCalendar
                             };
                             console.log('[LeetCode] Loaded from alfa-leetcode-api');
@@ -4458,9 +4748,9 @@ INTEGRATION NOTES — READ BEFORE ADDING TO index.html
                 /* Update stat badges */
                 const elTotal = document.getElementById('lc-total');
                 if (elTotal) elTotal.innerHTML = `<strong>${solved}</strong> problems solved`;
-                setText('lc-easy',  easy   || '—');
-                setText('lc-med',  medium  || '—');
-                setText('lc-hard', hard    || '—');
+                setText('lc-easy', easy || '—');
+                setText('lc-med', medium || '—');
+                setText('lc-hard', hard || '—');
                 setText('lc-rank', rank ? `#${Number(rank).toLocaleString()}` : '—');
 
                 /* Parse + render calendar heatmap */
@@ -4474,14 +4764,14 @@ INTEGRATION NOTES — READ BEFORE ADDING TO index.html
                     });
                 }
                 const maxVal = Math.max(...base.map(d => d.count), 1);
-                const weeks  = toWeeks(base);
+                const weeks = toWeeks(base);
                 buildGrid('lc-grid', weeks, maxVal, LC_COLORS);
                 buildMonths('lc-months', weeks);
             }
 
             function buildDemoLC() {
                 /* Graceful empty-grid fallback with a subtle status message */
-                const days  = last365().map(d => ({ ...d, count: 0 }));
+                const days = last365().map(d => ({ ...d, count: 0 }));
                 const weeks = toWeeks(days);
                 buildGrid('lc-grid', weeks, 1, LC_COLORS);
                 buildMonths('lc-months', weeks);

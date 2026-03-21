@@ -35,6 +35,8 @@ document.addEventListener('DOMContentLoaded', () => {
     initResumeDropdown();      // Resume dropdown + PDF viewer modal
     initTyping();              // Hero role typewriter
     initBackToTop();           // Back-to-top FAB
+    initProjSections();        // Organise cards into Featured / WIP / All-Others sections
+    initProjectImages();       // Real project screenshots with lazy-load + theme crossfade
 });
 
 /* ══════════════════════════════════════════════════════════
@@ -1039,10 +1041,14 @@ function initCertFilter() {
         });
     });
 
-    // Init: all cards visible
+    // Init: apply "webdev" filter immediately (matches default active button in HTML)
+    const DEFAULT_FILTER = 'webdev';
+    currentFilter = 'all'; // reset so applyFilter doesn't bail on same-filter guard
     cards.forEach(card => {
         card.classList.remove('cert-card--hidden', 'cert-card--entering', 'cert-card--exiting');
     });
+    // Short defer so DOM is painted before we run the exit animation
+    requestAnimationFrame(() => applyFilter(DEFAULT_FILTER));
 }
 
 /* ══════════════════════════════════════════════════════════
@@ -1405,4 +1411,357 @@ function initResumeDropdown() {
         closeDropdown();
         openResumeModal(src, label, name);
     });
+}
+
+/* ══════════════════════════════════════════════════════════
+   22. PROJECT REAL IMAGES
+   — Lazy-load actual screenshots into each .proj-card.
+   — Dual-image crossfade: Light shown by default in light-mode,
+     Dark shown by default in dark-mode; hover always swaps.
+   — Skeleton shimmer while images load.
+   — Graceful no-op fallback when image is not available.
+══════════════════════════════════════════════════════════ */
+function initProjectImages() {
+
+    // ── Image map ────────────────────────────────────────────────
+    // Key  = article[id]  of the .proj-card element
+    // base = image shown in LIGHT mode (or the only image)
+    // alt  = image shown in DARK  mode (omit if single-image)
+    const IMAGE_MAP = {
+        'proj-habitflow':    { base: 'ProjectImages/HabitFlow(Light).png',   alt: 'ProjectImages/HabitFlow(Night).png' },
+        'proj-riderent':     { base: 'ProjectImages/RideRent(Light).png',    alt: 'ProjectImages/RideRent(Night).png'  },
+        'proj-dicegame':     { base: 'ProjectImages/DiceGame(Light).png',    alt: 'ProjectImages/DiceGame(Night).png'  },
+        'proj-portfolio':    { base: 'ProjectImages/Portfolio(Light).png',   alt: 'ProjectImages/Portfolio(Night).png' },
+        'proj-drumkit':      { base: 'ProjectImages/DrumKit.png'                                                       },
+        'proj-simongame':    { base: 'ProjectImages/SimonGame.png'                                                     },
+        'proj-zomato':       { base: 'ProjectImages/Zomato.png'                                                        },
+        'proj-qrcode':       { base: 'ProjectImages/QR_Code_Generator.png'                                             },
+        'proj-fitkart':      { base: 'ProjectImages/FitKart.png'                                                       },
+        'proj-knowledgenet': { base: 'ProjectImages/KnowledgeNet.png'                                                  },
+        // proj-margdarshak, proj-attendance, proj-codexaminer → no entry → mockup kept
+    };
+
+    // ── Inject images into a single card ────────────────────────
+    function injectCard(card) {
+        const id = card.id;
+        const entry = IMAGE_MAP[id];
+        if (!entry) return; // No image available — leave the mockup intact
+
+        const wrap = card.querySelector('.proj-img-wrap');
+        if (!wrap) return;
+
+        const hasDual = Boolean(entry.alt);
+
+        // ── Build the container that sits over the mockup ─────
+        const imgWrap = document.createElement('div');
+        imgWrap.className = 'proj-real-img-wrap';
+
+        // ── Skeleton shimmer ──────────────────────────────────
+        const skeleton = document.createElement('div');
+        skeleton.className = 'proj-img-skeleton';
+        imgWrap.appendChild(skeleton);
+
+        // ── Base image (Light / single) ───────────────────────
+        const baseImg = document.createElement('img');
+        baseImg.className = 'proj-real-img proj-real-img--base';
+        if (hasDual) baseImg.classList.add('has-alt');
+        baseImg.alt = card.querySelector('.proj-title')?.textContent?.trim() || id;
+        baseImg.loading  = 'lazy';
+        baseImg.decoding = 'async';
+        imgWrap.appendChild(baseImg);
+
+        // ── Alternate image (Dark / Night) ────────────────────
+        let altImg = null;
+        if (hasDual) {
+            altImg = document.createElement('img');
+            altImg.className = 'proj-real-img proj-real-img--alt';
+            altImg.alt      = baseImg.alt + ' (dark)';
+            altImg.loading  = 'lazy';
+            altImg.decoding = 'async';
+            imgWrap.appendChild(altImg);
+        }
+
+        // ── Theme-swap hint badge (only for dual-image cards) ─
+        if (hasDual) {
+            const badge = document.createElement('span');
+            badge.className   = 'proj-theme-badge';
+            badge.innerHTML   = '<span class="proj-theme-badge-dot"></span>Hover to toggle theme';
+            badge.setAttribute('aria-hidden', 'true');
+            imgWrap.appendChild(badge);
+        }
+
+        // ── Append container into the card's image wrapper ────
+        // Keep the existing mockup behind in case images fail
+        wrap.style.position = 'relative';
+        wrap.appendChild(imgWrap);
+
+        // ── Image-load helpers ────────────────────────────────
+        let loadedCount = 0;
+        const totalImages = hasDual ? 2 : 1;
+
+        function onImageLoad(img) {
+            img.classList.add('is-loaded');
+            loadedCount++;
+            if (loadedCount >= totalImages) {
+                // All images ready — hide skeleton
+                skeleton.classList.add('is-hidden');
+            }
+        }
+
+        function onImageError(img, src) {
+            // If image fails, remove the whole imgWrap so mockup shows
+            console.warn(`[ProjectImages] Failed to load: ${src}`);
+            imgWrap.remove();
+        }
+
+        // ── Set src only when card enters viewport ────────────
+        // (already using loading="lazy" for native lazy-load,
+        //  but we also defer the src assignment with IO for
+        //  maximum control — avoids any hidden preload)
+        return { imgWrap, baseImg, altImg, skeleton, entry };
+    }
+
+    // ── Collect all cards and set up IntersectionObserver ────────
+    const cards = document.querySelectorAll('.proj-card[id]');
+    if (!cards.length) return;
+
+    const io = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (!entry.isIntersecting) return;
+            const card = entry.target;
+            io.unobserve(card); // Only trigger once
+
+            // Retrieve the deferred payload we stored on the card
+            const payload = card._imgPayload;
+            if (!payload) return;
+
+            const { imgWrap, baseImg, altImg, skeleton, entry: imgEntry } = payload;
+
+            // ── Load base image ──────────────────────────────
+            baseImg.addEventListener('load', () => {
+                baseImg.classList.add('is-loaded');
+                if (!altImg) skeleton.classList.add('is-hidden');
+            }, { once: true });
+
+            baseImg.addEventListener('error', () => {
+                console.warn(`[ProjectImages] Base image not found: ${imgEntry.base}`);
+                imgWrap.remove(); // Fallback: show original mockup
+            }, { once: true });
+
+            baseImg.src = imgEntry.base;
+
+            // ── Load alternate image ─────────────────────────
+            if (altImg) {
+                altImg.addEventListener('load', () => {
+                    altImg.classList.add('is-loaded');
+                    skeleton.classList.add('is-hidden');
+                }, { once: true });
+
+                altImg.addEventListener('error', () => {
+                    // Alt failed — keep base only, remove alt ref
+                    console.warn(`[ProjectImages] Alt image not found: ${imgEntry.alt}`);
+                    altImg.remove();
+                    baseImg.classList.remove('has-alt');
+                    // Remove badge since there's no alt to swap to
+                    imgWrap.querySelector('.proj-theme-badge')?.remove();
+                }, { once: true });
+
+                altImg.src = imgEntry.alt;
+            }
+        });
+    }, {
+        rootMargin: '200px 0px', // Pre-load 200px before entering viewport
+        threshold: 0,
+    });
+
+    // ── Build DOM for each card, store payload, start observing ──
+    cards.forEach(card => {
+        const payload = injectCard(card);
+        if (!payload) return;
+        card._imgPayload = payload;
+        io.observe(card);
+    });
+}
+
+/* ════════════════════════════════════════════════════════
+   23. PROJECT SECTIONS
+   — Reorganises existing flat card list into:
+       ► Featured (4 priority projects)
+       ► Currently Working On (AI Attendance)
+       ► All Others (8 remaining, hidden by default)
+   — "View All Projects" toggle with smooth CSS grid animation
+   — Auto-expands hidden section when a category filter is active
+════════════════════════════════════════════════════════ */
+function initProjSections() {
+    const container = document.getElementById('projectsGrid');
+    if (!container) return;
+
+    // ── Define section membership by article[id] ────────────────
+    const FEATURED_IDS = ['proj-habitflow', 'proj-riderent', 'proj-margdarshak', 'proj-codexaminer'];
+    const WIP_IDS      = ['proj-attendance'];
+    // Everything else goes into "All Others"
+
+    // Gather all existing cards in DOM order
+    const allCards = Array.from(container.querySelectorAll('.proj-card'));
+    if (!allCards.length) return;
+
+    // Classify
+    const featuredCards = allCards.filter(c => FEATURED_IDS.includes(c.id));
+    const wipCards      = allCards.filter(c => WIP_IDS.includes(c.id));
+    const otherCards    = allCards.filter(c =>
+        !FEATURED_IDS.includes(c.id) && !WIP_IDS.includes(c.id)
+    );
+
+    // ── Helpers ──────────────────────────────────────────
+    function makeSectionHeader(labelText, dotClass, count) {
+        const hd = document.createElement('div');
+        hd.className = 'proj-section-hd';
+        hd.innerHTML = `
+            <div class="proj-section-label">
+                <span class="proj-section-label-dot ${dotClass || ''}"></span>
+                ${labelText}
+            </div>
+            <span class="proj-section-count">${count} project${count !== 1 ? 's' : ''}</span>
+            <div class="proj-section-hd-line"></div>
+        `;
+        return hd;
+    }
+
+    function makeSection(className, headerEl, cards) {
+        const sec = document.createElement('section');
+        sec.className = `proj-section ${className}`;
+        sec.appendChild(headerEl);
+        const grid = document.createElement('div');
+        grid.className = 'proj-grid';
+        cards.forEach(c => grid.appendChild(c));
+        sec.appendChild(grid);
+        return sec;
+    }
+
+    // ── Build sections ──────────────────────────────────────
+    // Clear container (cards still in memory)
+    container.innerHTML = '';
+
+    // 1 — Featured
+    if (featuredCards.length) {
+        const sec = makeSection(
+            'proj-section--featured',
+            makeSectionHeader('⭐ Top Featured Projects', '', featuredCards.length),
+            featuredCards
+        );
+        container.appendChild(sec);
+    }
+
+    // 2 — WIP
+    if (wipCards.length) {
+        // Inject WIP badge + modifier class into each WIP card
+        wipCards.forEach(card => {
+            card.classList.add('proj-card--wip');
+            // Remove old featured ribbon if present, add WIP badge
+            if (!card.querySelector('.proj-wip-badge')) {
+                const badge = document.createElement('div');
+                badge.className = 'proj-wip-badge';
+                badge.setAttribute('aria-label', 'Currently in development');
+                badge.innerHTML = '<span class="proj-wip-badge-dot"></span>Working On';
+                card.appendChild(badge);
+            }
+        });
+        const sec = makeSection(
+            'proj-section--wip',
+            makeSectionHeader('Currently Working On', 'wip-dot', wipCards.length),
+            wipCards
+        );
+        container.appendChild(sec);
+    }
+
+    // 3 — Toggle button
+    const toggleWrap = document.createElement('div');
+    toggleWrap.className = 'proj-toggle-wrap';
+    const toggleBtn = document.createElement('button');
+    toggleBtn.id = 'projToggleBtn';
+    toggleBtn.className = 'proj-toggle-btn';
+    toggleBtn.setAttribute('aria-expanded', 'false');
+    toggleBtn.setAttribute('aria-controls', 'projAllSection');
+    toggleBtn.innerHTML = `
+        <span class="proj-toggle-label">View All Projects</span>
+        <span class="proj-toggle-count">${otherCards.length}</span>
+        <svg class="proj-toggle-arrow" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 12 15 18 9"/>
+        </svg>
+    `;
+    toggleWrap.appendChild(toggleBtn);
+    container.appendChild(toggleWrap);
+
+    // 4 — All-Others (hidden)
+    let allSection = null;
+    if (otherCards.length) {
+        allSection = document.createElement('section');
+        allSection.id = 'projAllSection';
+        allSection.className = 'proj-section proj-section--all';
+        allSection.setAttribute('aria-hidden', 'true');
+
+        // The inner wrapper is required for the grid-template-rows trick
+        const inner = document.createElement('div');
+        inner.className = 'proj-section-inner';
+
+        const hd = makeSectionHeader('All Projects', '', otherCards.length);
+        inner.appendChild(hd);
+
+        const grid = document.createElement('div');
+        grid.className = 'proj-grid';
+        otherCards.forEach(c => grid.appendChild(c));
+        inner.appendChild(grid);
+
+        allSection.appendChild(inner);
+        container.appendChild(allSection);
+    }
+
+    // ── Toggle logic ──────────────────────────────────────
+    let isOpen = false;
+    const labelEl = toggleBtn.querySelector('.proj-toggle-label');
+
+    function openAll(silent) {
+        if (!allSection) return;
+        isOpen = true;
+        allSection.classList.add('is-open');
+        allSection.setAttribute('aria-hidden', 'false');
+        toggleBtn.classList.add('is-open');
+        toggleBtn.setAttribute('aria-expanded', 'true');
+        if (labelEl) labelEl.textContent = 'Show Less';
+        if (!silent) {
+            // Scroll toggle button into view so user sees what happened
+            setTimeout(() => toggleBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 80);
+        }
+    }
+
+    function closeAll() {
+        if (!allSection) return;
+        isOpen = false;
+        allSection.classList.remove('is-open');
+        allSection.setAttribute('aria-hidden', 'true');
+        toggleBtn.classList.remove('is-open');
+        toggleBtn.setAttribute('aria-expanded', 'false');
+        if (labelEl) labelEl.textContent = 'View All Projects';
+    }
+
+    toggleBtn.addEventListener('click', () => {
+        isOpen ? closeAll() : openAll(false);
+    });
+
+    // ── Auto-expand when a category filter is applied ────────
+    // If someone clicks "AI" filter, show all cards (incl. hidden section)
+    // so no project is invisible during filtering.
+    const filterBtns = document.querySelectorAll('.proj-filter');
+    filterBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const filter = btn.dataset.pf;
+            if (filter && filter !== 'all' && !isOpen) {
+                openAll(true); // silent = no scroll
+            }
+        });
+    });
+
+    // Expose for other modules (e.g. if filter wants to collapse)
+    window._projSections = { openAll, closeAll, getIsOpen: () => isOpen };
 }
