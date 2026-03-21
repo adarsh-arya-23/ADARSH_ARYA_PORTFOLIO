@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -4649,8 +4649,8 @@ INTEGRATION NOTES — READ BEFORE ADDING TO index.html
                 const USERNAME = 'adarsharya7073';
 
                 /* ── 1. Check localStorage cache (1-hour TTL) ── */
-                const CACHE_KEY = `lc_data_${USERNAME}`;
-                const CACHE_TTL = 60 * 60 * 1000; // 1 hour in ms
+                const CACHE_KEY = `lc_data_${USERNAME}_v2`; // v2 = invalidates stale cache from old query
+                const CACHE_TTL = 6 * 60 * 60 * 1000; // 6 hours in ms
                 try {
                     const cached = localStorage.getItem(CACHE_KEY);
                     if (cached) {
@@ -4663,15 +4663,18 @@ INTEGRATION NOTES — READ BEFORE ADDING TO index.html
                     }
                 } catch (_) { /* ignore corrupted cache */ }
 
-                /* ── 2. Strategy A: Your Cloudflare Worker ── */
+                /* ── 2. Strategy A: Cloudflare Worker (fixed GQL query) ── */
                 const WORKER = 'https://leetcode-heatmap.adarsharya7073.workers.dev/';
+                // NOTE: userProgressCalendarV2 is blocked for unauthenticated calls.
+                // Use matchedUser.userCalendar which is still publicly accessible.
+                const currentYear = new Date().getFullYear();
                 const GQL_QUERY = `
-  query userProfile($username: String!) {
+  query userProfile($username: String!, $year: Int) {
     matchedUser(username: $username) {
       profile { ranking }
       submitStatsGlobal { acSubmissionNum { difficulty count } }
+      userCalendar(year: $year) { submissionCalendar }
     }
-    userProgressCalendarV2(username: $username) { submissionCalendar }
   }`;
 
                 let payload = null;
@@ -4680,56 +4683,84 @@ INTEGRATION NOTES — READ BEFORE ADDING TO index.html
                     const r = await fetch(WORKER, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ query: GQL_QUERY, variables: { username: USERNAME } }),
-                        signal: AbortSignal.timeout(6000)
+                        body: JSON.stringify({
+                            query: GQL_QUERY,
+                            variables: { username: USERNAME, year: currentYear }
+                        }),
+                        signal: AbortSignal.timeout(8000)
                     });
                     if (r.ok) {
-                        const { data } = await r.json();
-                        if (data?.matchedUser && data?.userProgressCalendarV2) {
-                            const stats = data.matchedUser.submitStatsGlobal?.acSubmissionNum ?? [];
-                            const get = d => stats.find(s => s.difficulty === d)?.count ?? 0;
+                        const json = await r.json();
+                        const d = json?.data?.matchedUser;
+                        if (d) {
+                            const stats = d.submitStatsGlobal?.acSubmissionNum ?? [];
+                            const get = diff => stats.find(s => s.difficulty === diff)?.count ?? 0;
                             payload = {
                                 solved: get('All'),
                                 easy: get('Easy'), medium: get('Medium'), hard: get('Hard'),
-                                rank: data.matchedUser.profile?.ranking,
-                                calendar: data.userProgressCalendarV2.submissionCalendar
+                                rank: d.profile?.ranking,
+                                calendar: d.userCalendar?.submissionCalendar
                             };
-                            console.log('[LeetCode] Loaded from Worker');
+                            console.log('[LeetCode] Loaded from Worker (userCalendar query)');
                         }
                     }
                 } catch (err) {
                     console.warn('[LeetCode] Worker failed:', err.message);
                 }
 
-                /* ── 3. Strategy B: alfa-leetcode-api (reliable public API) ── */
+                /* ── 3. Strategy B: faisalshohag LeetCode API (actively maintained) ── */
                 if (!payload) {
                     try {
-                        const BASE = `https://alfa-leetcode-api.onrender.com/${USERNAME}`;
-                        const [calRes, solvedRes] = await Promise.all([
-                            fetch(`${BASE}/calendar`, { signal: AbortSignal.timeout(10000) }),
-                            fetch(`${BASE}/solved`, { signal: AbortSignal.timeout(10000) })
-                        ]);
-
-                        if (calRes.ok && solvedRes.ok) {
-                            const calData = await calRes.json();
-                            const solvedData = await solvedRes.json();
-
-                            payload = {
-                                solved: solvedData.solvedProblem ?? 0,
-                                easy: solvedData.easySolved ?? 0,
-                                medium: solvedData.mediumSolved ?? 0,
-                                hard: solvedData.hardSolved ?? 0,
-                                rank: null,               // not available from this endpoint
-                                calendar: calData.submissionCalendar
-                            };
-                            console.log('[LeetCode] Loaded from alfa-leetcode-api');
+                        const BASE = `https://leetcode-api-faisalshohag.vercel.app/${USERNAME}`;
+                        const res = await fetch(BASE, { signal: AbortSignal.timeout(10000) });
+                        if (res.ok) {
+                            const d = await res.json();
+                            // This API returns totalSolved, easySolved, mediumSolved, hardSolved,
+                            // and submissionCalendar as a JSON object (not string)
+                            if (d && (d.totalSolved !== undefined || d.submissionCalendar)) {
+                                payload = {
+                                    solved: d.totalSolved ?? 0,
+                                    easy: d.easySolved ?? 0,
+                                    medium: d.mediumSolved ?? 0,
+                                    hard: d.hardSolved ?? 0,
+                                    rank: d.ranking ?? null,
+                                    calendar: d.submissionCalendar
+                                };
+                                console.log('[LeetCode] Loaded from faisalshohag API');
+                            }
                         }
                     } catch (err) {
-                        console.warn('[LeetCode] alfa-leetcode-api failed:', err.message);
+                        console.warn('[LeetCode] faisalshohag API failed:', err.message);
                     }
                 }
 
-                /* ── 4. Render or fallback ── */
+                /* ── 4. Strategy C: leetcode-stats-api (secondary fallback) ── */
+                if (!payload) {
+                    try {
+                        const res = await fetch(
+                            `https://leetcode-stats-api.p.rapidapi.com/${USERNAME}?include_calendar=true`,
+                            { signal: AbortSignal.timeout(8000) }
+                        );
+                        if (res.ok) {
+                            const d = await res.json();
+                            if (d && d.status !== 'error') {
+                                payload = {
+                                    solved: d.totalSolved ?? 0,
+                                    easy: d.easySolved ?? 0,
+                                    medium: d.mediumSolved ?? 0,
+                                    hard: d.hardSolved ?? 0,
+                                    rank: d.ranking ?? null,
+                                    calendar: d.submissionCalendar ?? null
+                                };
+                                console.log('[LeetCode] Loaded from Strategy C');
+                            }
+                        }
+                    } catch (err) {
+                        console.warn('[LeetCode] Strategy C failed:', err.message);
+                    }
+                }
+
+                /* ── 5. Render or fallback ── */
                 if (payload) {
                     try {
                         localStorage.setItem(CACHE_KEY, JSON.stringify({ ts: Date.now(), payload }));

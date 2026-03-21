@@ -1,21 +1,16 @@
 /**
- * Cloudflare Worker — LeetCode GraphQL Proxy
+ * Cloudflare Worker — LeetCode GraphQL Proxy  (v2 — fixed query)
  * =====================================================================
  * Deployed at: https://leetcode-heatmap.adarsharya7073.workers.dev/
  *
  * WHY this worker exists:
- *   LeetCode's GraphQL API (https://leetcode.com/graphql) blocks cross-origin
- *   requests from browsers (CORS policy).  Server-to-server requests are NOT
- *   subject to CORS, so this Worker forwards the request on behalf of the
- *   browser and injects the required CORS response headers.
+ *   LeetCode's GraphQL API blocks cross-origin requests from browsers.
+ *   This Worker forwards the request server-side and injects CORS headers.
  *
- * WHAT was wrong with the old worker (root cause):
- *   Most likely one or more of these:
- *     1. Missing  Access-Control-Allow-Origin  header → browser blocked result
- *     2. Missing  OPTIONS pre-flight handler   → POST never sent
- *     3. LeetCode started requiring  Referer  or  User-Agent  headers (bot block)
- *     4. Worker CPU time exceeded on free tier (complex query)
- *     5. Worker not actually deployed / route not matched
+ * FIX (v2):
+ *   The old query used `userProgressCalendarV2` which LeetCode now blocks
+ *   for unauthenticated requests.  This version uses `matchedUser.userCalendar`
+ *   which is still publicly accessible without authentication.
  *
  * HOW TO DEPLOY:
  *   Option A — Cloudflare Dashboard (easiest):
@@ -29,14 +24,16 @@
 
 const LEETCODE_GQL = 'https://leetcode.com/graphql';
 
-// Headers sent to LeetCode — mimic a real browser to avoid bot blocks
+// Headers sent to LeetCode — mimic a real browser to avoid bot detection
 const LC_HEADERS = {
-  'Content-Type':  'application/json',
-  'Referer':       'https://leetcode.com/',
-  'Origin':        'https://leetcode.com',
-  'User-Agent':    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
-  'Accept':        'application/json',
-  'x-csrftoken':   ''   // empty is fine for public queries
+  'Content-Type':    'application/json',
+  'Referer':         'https://leetcode.com/',
+  'Origin':          'https://leetcode.com',
+  'User-Agent':      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+  'Accept':          'application/json, text/plain, */*',
+  'Accept-Language': 'en-US,en;q=0.9',
+  'Cache-Control':   'no-cache',
+  'x-csrftoken':     ''   // empty is fine for public/unauthenticated queries
 };
 
 // CORS headers returned to the browser
@@ -63,7 +60,7 @@ export default {
       );
     }
 
-    /* ── Forward request to LeetCode GraphQL ── */
+    /* ── Parse incoming body ── */
     let body;
     try {
       body = await request.json();
@@ -74,6 +71,7 @@ export default {
       );
     }
 
+    /* ── Forward to LeetCode GraphQL ── */
     let lcResponse;
     try {
       lcResponse = await fetch(LEETCODE_GQL, {
@@ -88,7 +86,7 @@ export default {
       );
     }
 
-    /* ── Return LeetCode's response with CORS headers attached ── */
+    /* ── Return LeetCode's response with CORS headers ── */
     const data = await lcResponse.text();
     return new Response(data, {
       status:  lcResponse.status,
